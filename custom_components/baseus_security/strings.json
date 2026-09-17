@@ -25,9 +25,14 @@
   },
   "entity": {
     "sensor": {
-      "wifi_signal": {
-        "name": "Wi-Fi signal"
-      }
+      "wifi_signal": { "name": "Wi-Fi signal" },
+      "wifi_strength": { "name": "Wi-Fi strength" },
+      "storage_total": { "name": "Storage total" },
+      "storage_free": { "name": "Storage free" },
+      "firmware": { "name": "Firmware" }
+    },
+    "binary_sensor": {
+      "charging": { "name": "Charging" }
     }
   }
 }
