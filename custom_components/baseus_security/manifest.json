@@ -1,0 +1,13 @@
+{
+  "domain": "baseus_security",
+  "name": "Baseus Security",
+  "codeowners": ["@pickeld"],
+  "config_flow": true,
+  "documentation": "https://github.com/pickeld/baseus-home-assistant",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/pickeld/baseus-home-assistant/issues",
+  "requirements": [
+    "baseus-cam-bridge @ git+https://github.com/pickeld/baseus-cam-bridge@main"
+  ],
+  "version": "0.1.0"
+}

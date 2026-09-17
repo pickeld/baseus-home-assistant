@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+
+# Never commit credentials or local HA state
+.env
+*.env
+secrets.yaml
+.storage/
+*.log

@@ -1,0 +1,33 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Baseus Security",
+        "description": "Sign in with your Baseus Security app account. Live video is served by your local baseus-cam-bridge instance; point RTSP base at it (e.g. rtsp://homeassistant.local:8554).",
+        "data": {
+          "account": "Account (email or phone)",
+          "password": "Password",
+          "rtsp_base": "RTSP base URL (baseus-cam-bridge)",
+          "region": "Region",
+          "country_code": "Phone country code",
+          "include_offline": "Also add offline cameras"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid account or password.",
+      "cannot_connect": "Could not reach the Baseus cloud. Try again.",
+      "dependency_missing": "The baseus-cam-bridge dependency is not installed."
+    },
+    "abort": {
+      "already_configured": "This account is already configured."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "wifi_signal": {
+        "name": "Wi-Fi signal"
+      }
+    }
+  }
+}
