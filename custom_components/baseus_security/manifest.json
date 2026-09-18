@@ -9,5 +9,5 @@
   "requirements": [
     "baseus-cam-bridge @ git+https://github.com/pickeld/baseus-cam-bridge@main"
   ],
-  "version": "0.1.0"
+  "version": "0.2.0"
 }

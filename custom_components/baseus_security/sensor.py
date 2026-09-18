@@ -56,6 +56,29 @@ def _leaf(cam, keys: tuple[str, ...]):
     return None
 
 
+def _nested(cam, *path):
+    """Read an exact nested path from ``cam.extra`` (avoids flatten collisions)."""
+    node = getattr(cam, "extra", {}) or {}
+    for part in path:
+        if not isinstance(node, dict):
+            return None
+        node = node.get(part)
+    return node
+
+
+def _nested_int(cam, *path, lo=None, hi=None):
+    val = _nested(cam, *path)
+    try:
+        num = int(float(val))
+    except (TypeError, ValueError):
+        return None
+    if lo is not None:
+        num = max(lo, num)
+    if hi is not None:
+        num = min(hi, num)
+    return num
+
+
 def _as_int(cam, keys, lo=None, hi=None):
     val = _leaf(cam, keys)
     try:
@@ -138,15 +161,33 @@ SENSORS: tuple[BaseusSensorDescription, ...] = (
         value_fn=lambda c: _as_int(c, ("temperature", "temp", "battery_temp")),
     ),
     BaseusSensorDescription(
+        key="speaker_volume",
+        translation_key="speaker_volume",
+        native_unit_of_measurement=PERCENTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+        value_fn=lambda c: _as_int(c, ("speaker_vol", "speaker_volume", "volume"), 0, 100),
+    ),
+    BaseusSensorDescription(
+        key="pir_sensitivity",
+        translation_key="pir_sensitivity",
+        native_unit_of_measurement=PERCENTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+        # Nested under PIR to avoid colliding with SmartMode.pir_sen.
+        value_fn=lambda c: _nested_int(c, "child_info", "PIR", "pir_sen", lo=0, hi=100),
+    ),
+    BaseusSensorDescription(
         key="storage_total",
         translation_key="storage_total",
         device_class=SensorDeviceClass.DATA_SIZE,
         native_unit_of_measurement=UnitOfInformation.MEGABYTES,
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
-        value_fn=lambda c: _storage_mb(
-            c, ("sd_total", "sdcard_total", "storage_total", "total_size", "tf_total")
-        ),
+        value_fn=lambda c: _nested_int(c, "base", "storage", "total")
+        or _storage_mb(c, ("sd_total", "sdcard_total", "storage_total", "total_size", "tf_total")),
     ),
     BaseusSensorDescription(
         key="storage_free",
@@ -155,9 +196,17 @@ SENSORS: tuple[BaseusSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfInformation.MEGABYTES,
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
-        value_fn=lambda c: _storage_mb(
-            c, ("sd_free", "sdcard_free", "storage_free", "free_size", "tf_free")
-        ),
+        value_fn=lambda c: _nested_int(c, "base", "storage", "free")
+        or _storage_mb(c, ("sd_free", "sdcard_free", "storage_free", "free_size", "tf_free")),
+    ),
+    BaseusSensorDescription(
+        key="storage_used",
+        translation_key="storage_used",
+        device_class=SensorDeviceClass.DATA_SIZE,
+        native_unit_of_measurement=UnitOfInformation.MEGABYTES,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+        value_fn=lambda c: _nested_int(c, "base", "storage", "used"),
     ),
     BaseusSensorDescription(
         key="firmware",

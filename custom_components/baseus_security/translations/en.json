@@ -27,12 +27,23 @@
     "sensor": {
       "wifi_signal": { "name": "Wi-Fi signal" },
       "wifi_strength": { "name": "Wi-Fi strength" },
+      "speaker_volume": { "name": "Speaker volume" },
+      "pir_sensitivity": { "name": "PIR sensitivity" },
       "storage_total": { "name": "Storage total" },
       "storage_free": { "name": "Storage free" },
+      "storage_used": { "name": "Storage used" },
       "firmware": { "name": "Firmware" }
     },
     "binary_sensor": {
-      "charging": { "name": "Charging" }
+      "charging": { "name": "Charging" },
+      "camera_enabled": { "name": "Camera enabled" },
+      "motion_detection": { "name": "Motion detection" },
+      "status_light": { "name": "Status light" },
+      "night_vision": { "name": "Night vision" },
+      "human_tracking": { "name": "Human tracking" },
+      "low_power_mode": { "name": "Low-power mode" },
+      "microphone": { "name": "Microphone" },
+      "sd_card": { "name": "SD card problem" }
     }
   }
 }
