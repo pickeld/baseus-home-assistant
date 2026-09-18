@@ -94,6 +94,15 @@ If `probe-controls` finds nothing, your cameras don't accept settings via the
 cloud conventions tried, and controls can't be enabled without deeper protocol
 work.
 
+> **Status (known limitation):** on the current Baseus/XM cloud, every write
+> Action returns `-9999 "The interface is not currently supported"` — the cloud
+> gateway that serves the device list is effectively **read-only**. Changing
+> settings would require local P2P *set*-commands (not yet reverse-engineered for
+> this binary-protocol family). The switch/number entities and options are kept
+> in place so they can be enabled instantly if/when those commands become known,
+> but they are **not functional today**. Everything read-only (sensors, states,
+> live video) works fully.
+
 ---
 
 ## How it works
