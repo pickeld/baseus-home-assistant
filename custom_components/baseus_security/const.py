@@ -11,11 +11,17 @@ CONF_COUNTRY_CODE = "country_code"
 CONF_RTSP_BASE = "rtsp_base"
 CONF_INCLUDE_OFFLINE = "include_offline"
 
+# Writable-control options (see README: run `probe-controls` to discover these).
+CONF_ENABLE_CONTROLS = "enable_controls"
+CONF_SET_ACTION = "set_action"
+CONF_SET_SHAPE = "set_shape"
+
 # Defaults
 DEFAULT_REGION = "AUTO"
 DEFAULT_COUNTRY_CODE = "1"
 DEFAULT_RTSP_BASE = "rtsp://homeassistant.local:8554"
 DEFAULT_INCLUDE_OFFLINE = True
+DEFAULT_ENABLE_CONTROLS = False
 
 REGIONS = ["AUTO", "US", "EU", "AU"]
 

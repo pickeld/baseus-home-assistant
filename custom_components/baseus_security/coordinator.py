@@ -13,13 +13,19 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
+from homeassistant.exceptions import HomeAssistantError
+
 from .const import (
     CONF_ACCOUNT,
     CONF_COUNTRY_CODE,
+    CONF_ENABLE_CONTROLS,
     CONF_INCLUDE_OFFLINE,
     CONF_PASSWORD,
     CONF_REGION,
+    CONF_SET_ACTION,
+    CONF_SET_SHAPE,
     DEFAULT_COUNTRY_CODE,
+    DEFAULT_ENABLE_CONTROLS,
     DEFAULT_INCLUDE_OFFLINE,
     DEFAULT_REGION,
     UPDATE_INTERVAL_SECONDS,
@@ -67,3 +73,47 @@ class BaseusCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self) -> dict:
         return await self.hass.async_add_executor_job(self._fetch)
+
+    # --- writable controls ---
+    @property
+    def controls_enabled(self) -> bool:
+        return bool(self.entry.options.get(CONF_ENABLE_CONTROLS, DEFAULT_ENABLE_CONTROLS))
+
+    def _set_param_blocking(self, cam, key, value, level: str):
+        from baseus_bridge.cloud import BaseusCloud, CloudError
+
+        data = self.entry.data
+        opts = self.entry.options
+        action = opts.get(CONF_SET_ACTION) or None
+        shape = opts.get(CONF_SET_SHAPE) or None
+        client = BaseusCloud(
+            account=data[CONF_ACCOUNT],
+            password=data[CONF_PASSWORD],
+            region=data.get(CONF_REGION, DEFAULT_REGION),
+            country_code=data.get(CONF_COUNTRY_CODE, DEFAULT_COUNTRY_CODE),
+        )
+        try:
+            client.login()
+            if level == "base":
+                return client.set_device_param(
+                    cam.device_sn, key, value, action=action, shape=shape)
+            return client.set_device_param(
+                cam.device_sn, key, value, action=action, shape=shape,
+                channel=cam.channel, child_sn=cam.camera_sn)
+        except CloudError as err:
+            raise HomeAssistantError(str(err)) from err
+
+    async def async_set_param(self, slug: str, key: str, value, *, level: str = "child") -> None:
+        """Set a device/camera parameter via the cloud, then refresh state."""
+        cam = (self.data or {}).get(slug)
+        if cam is None:
+            raise HomeAssistantError(f"unknown camera {slug!r}")
+        accepted, resp = await self.hass.async_add_executor_job(
+            self._set_param_blocking, cam, key, value, level
+        )
+        if not accepted:
+            raise HomeAssistantError(
+                f"device rejected {key}={value} (code={resp.get('code')}). "
+                "Confirm the set-action via `probe-controls` and the integration options."
+            )
+        await self.async_request_refresh()

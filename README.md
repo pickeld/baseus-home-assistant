@@ -19,8 +19,14 @@ and then wires each one up to the bridge's stream.
 
 - A `camera` entity per Baseus camera, using the bridge's RTSP stream (works with
   the HA stream component, Picture Glance cards, recording, etc.)
-- A **battery** sensor and **Wi-Fi signal** sensor (best-effort, per model)
-- A **connectivity** binary sensor (online / offline)
+- **Sensors**: battery, temperature, Wi-Fi signal, speaker volume, PIR
+  sensitivity, and SD-card storage (total/used/free) — created only when your
+  camera actually reports them
+- **Binary sensors**: online, charging, camera enabled, motion detection, status
+  light, night vision, human tracking, low-power mode, microphone, SD-card health
+- **Writable controls** (optional): switches for camera/status-light/night-vision/
+  human-tracking/low-power/microphone/HomeStation-LED and numbers for
+  speaker/prompt volume — see [Writable controls](#writable-controls)
 - Automatic discovery of every camera on your account
 
 ---
@@ -65,6 +71,28 @@ Everything is entered in the UI config flow:
 
 Credentials are stored in Home Assistant's config entry store, the same as any
 other cloud integration.
+
+### Writable controls
+
+Switches and number entities that **change** camera settings are **off by
+default** because the Baseus cloud "set" operation isn't publicly documented and
+must be confirmed for your account first (so we never fire unknown commands at
+your cameras).
+
+1. Discover the set-action **safely** — this toggles only the benign HomeStation
+   status LED, verifies the change, then reverts it:
+   ```bash
+   docker compose run --rm baseus-cam-bridge python -m baseus_bridge probe-controls
+   ```
+2. If it prints a `confirmed_action` and `confirmed_shape`, open **Settings →
+   Devices & Services → Baseus Security → Configure**, tick **Enable writable
+   controls**, and paste the action + shape.
+3. The switches/numbers appear (under each camera's device, in the *Config*
+   category). If a write is rejected, HA surfaces an error and nothing changes.
+
+If `probe-controls` finds nothing, your cameras don't accept settings via the
+cloud conventions tried, and controls can't be enabled without deeper protocol
+work.
 
 ---
 

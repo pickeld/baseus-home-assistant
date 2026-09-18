@@ -4,16 +4,26 @@ from __future__ import annotations
 from typing import Any
 
 import voluptuous as vol
-from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
+from homeassistant.config_entries import (
+    ConfigEntry,
+    ConfigFlow,
+    ConfigFlowResult,
+    OptionsFlow,
+)
+from homeassistant.core import callback
 
 from .const import (
     CONF_ACCOUNT,
     CONF_COUNTRY_CODE,
+    CONF_ENABLE_CONTROLS,
     CONF_INCLUDE_OFFLINE,
     CONF_PASSWORD,
     CONF_REGION,
     CONF_RTSP_BASE,
+    CONF_SET_ACTION,
+    CONF_SET_SHAPE,
     DEFAULT_COUNTRY_CODE,
+    DEFAULT_ENABLE_CONTROLS,
     DEFAULT_INCLUDE_OFFLINE,
     DEFAULT_REGION,
     DEFAULT_RTSP_BASE,
@@ -50,6 +60,11 @@ class BaseusConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Baseus Security."""
 
     VERSION = 1
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry: ConfigEntry) -> "BaseusOptionsFlow":
+        return BaseusOptionsFlow(config_entry)
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -96,3 +111,37 @@ class BaseusConfigFlow(ConfigFlow, domain=DOMAIN):
         except Exception:  # pragma: no cover - network/other
             return "cannot_connect"
         return True
+
+
+class BaseusOptionsFlow(OptionsFlow):
+    """Options: enable writable controls and pin the confirmed set-action.
+
+    Run ``python -m baseus_bridge probe-controls`` to discover the action/shape
+    pair, then enter them here and enable controls.
+    """
+
+    def __init__(self, config_entry: ConfigEntry) -> None:
+        self.config_entry = config_entry
+
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        if user_input is not None:
+            return self.async_create_entry(title="", data=user_input)
+
+        opts = self.config_entry.options
+        schema = vol.Schema(
+            {
+                vol.Optional(
+                    CONF_ENABLE_CONTROLS,
+                    default=opts.get(CONF_ENABLE_CONTROLS, DEFAULT_ENABLE_CONTROLS),
+                ): bool,
+                vol.Optional(
+                    CONF_SET_ACTION, default=opts.get(CONF_SET_ACTION, "")
+                ): str,
+                vol.Optional(
+                    CONF_SET_SHAPE, default=opts.get(CONF_SET_SHAPE, "")
+                ): str,
+            }
+        )
+        return self.async_show_form(step_id="init", data_schema=schema)

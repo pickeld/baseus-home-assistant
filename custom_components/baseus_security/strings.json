@@ -23,6 +23,19 @@
       "already_configured": "This account is already configured."
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Baseus Security controls",
+        "description": "Enable writable controls (switches, volumes). First discover the set-action by running `python -m baseus_bridge probe-controls`, then paste the confirmed action and shape below.",
+        "data": {
+          "enable_controls": "Enable writable controls",
+          "set_action": "Set action (from probe-controls)",
+          "set_shape": "Set shape (from probe-controls)"
+        }
+      }
+    }
+  },
   "entity": {
     "sensor": {
       "wifi_signal": { "name": "Wi-Fi signal" },
@@ -44,6 +57,19 @@
       "low_power_mode": { "name": "Low-power mode" },
       "microphone": { "name": "Microphone" },
       "sd_card": { "name": "SD card problem" }
+    },
+    "switch": {
+      "camera_enabled": { "name": "Camera" },
+      "status_light": { "name": "Status light" },
+      "night_vision": { "name": "Night vision" },
+      "human_tracking": { "name": "Human tracking" },
+      "low_power_mode": { "name": "Low-power mode" },
+      "microphone": { "name": "Microphone" },
+      "base_led": { "name": "HomeStation LED" }
+    },
+    "number": {
+      "speaker_volume": { "name": "Speaker volume" },
+      "prompt_volume": { "name": "Prompt volume" }
     }
   }
 }
