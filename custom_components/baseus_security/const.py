@@ -15,6 +15,9 @@ CONF_INCLUDE_OFFLINE = "include_offline"
 CONF_ENABLE_CONTROLS = "enable_controls"
 CONF_SET_ACTION = "set_action"
 CONF_SET_SHAPE = "set_shape"
+# Optional separate pair for base/HomeStation-level params (falls back to child).
+CONF_SET_ACTION_BASE = "set_action_base"
+CONF_SET_SHAPE_BASE = "set_shape_base"
 
 # Defaults
 DEFAULT_REGION = "AUTO"

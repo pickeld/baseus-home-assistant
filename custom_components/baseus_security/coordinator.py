@@ -23,7 +23,9 @@ from .const import (
     CONF_PASSWORD,
     CONF_REGION,
     CONF_SET_ACTION,
+    CONF_SET_ACTION_BASE,
     CONF_SET_SHAPE,
+    CONF_SET_SHAPE_BASE,
     DEFAULT_COUNTRY_CODE,
     DEFAULT_ENABLE_CONTROLS,
     DEFAULT_INCLUDE_OFFLINE,
@@ -84,8 +86,12 @@ class BaseusCoordinator(DataUpdateCoordinator):
 
         data = self.entry.data
         opts = self.entry.options
-        action = opts.get(CONF_SET_ACTION) or None
-        shape = opts.get(CONF_SET_SHAPE) or None
+        if level == "base":
+            action = opts.get(CONF_SET_ACTION_BASE) or opts.get(CONF_SET_ACTION) or None
+            shape = opts.get(CONF_SET_SHAPE_BASE) or opts.get(CONF_SET_SHAPE) or None
+        else:
+            action = opts.get(CONF_SET_ACTION) or None
+            shape = opts.get(CONF_SET_SHAPE) or None
         client = BaseusCloud(
             account=data[CONF_ACCOUNT],
             password=data[CONF_PASSWORD],

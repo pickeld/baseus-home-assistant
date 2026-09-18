@@ -81,6 +81,21 @@ SWITCHES: tuple[BaseusSwitchDescription, ...] = (
         read_fn=lambda c: _nested(c, "child_info", "mic_status"),
     ),
     BaseusSwitchDescription(
+        key="osd_logo",
+        translation_key="osd_logo",
+        entity_category=EntityCategory.CONFIG,
+        entity_registry_enabled_default=False,
+        param="osd_logo",
+        read_fn=lambda c: _nested(c, "child_info", "osd_logo"),
+    ),
+    BaseusSwitchDescription(
+        key="alert_voice",
+        translation_key="alert_voice",
+        entity_category=EntityCategory.CONFIG,
+        param="alert_voice",
+        read_fn=lambda c: _nested(c, "child_info", "alert_voice"),
+    ),
+    BaseusSwitchDescription(
         key="base_led",
         translation_key="base_led",
         entity_category=EntityCategory.CONFIG,

@@ -30,8 +30,10 @@
         "description": "Enable writable controls (switches, volumes). First discover the set-action by running `python -m baseus_bridge probe-controls`, then paste the confirmed action and shape below.",
         "data": {
           "enable_controls": "Enable writable controls",
-          "set_action": "Set action (from probe-controls)",
-          "set_shape": "Set shape (from probe-controls)"
+          "set_action": "Set action \u2014 child/per-camera (from probe-controls)",
+          "set_shape": "Set shape \u2014 child/per-camera (from probe-controls)",
+          "set_action_base": "Set action \u2014 base/HomeStation (optional)",
+          "set_shape_base": "Set shape \u2014 base/HomeStation (optional)"
         }
       }
     }
@@ -65,6 +67,8 @@
       "human_tracking": { "name": "Human tracking" },
       "low_power_mode": { "name": "Low-power mode" },
       "microphone": { "name": "Microphone" },
+      "osd_logo": { "name": "OSD logo overlay" },
+      "alert_voice": { "name": "Alert voice" },
       "base_led": { "name": "HomeStation LED" }
     },
     "number": {

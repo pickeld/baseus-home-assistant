@@ -21,7 +21,9 @@ from .const import (
     CONF_REGION,
     CONF_RTSP_BASE,
     CONF_SET_ACTION,
+    CONF_SET_ACTION_BASE,
     CONF_SET_SHAPE,
+    CONF_SET_SHAPE_BASE,
     DEFAULT_COUNTRY_CODE,
     DEFAULT_ENABLE_CONTROLS,
     DEFAULT_INCLUDE_OFFLINE,
@@ -141,6 +143,12 @@ class BaseusOptionsFlow(OptionsFlow):
                 ): str,
                 vol.Optional(
                     CONF_SET_SHAPE, default=opts.get(CONF_SET_SHAPE, "")
+                ): str,
+                vol.Optional(
+                    CONF_SET_ACTION_BASE, default=opts.get(CONF_SET_ACTION_BASE, "")
+                ): str,
+                vol.Optional(
+                    CONF_SET_SHAPE_BASE, default=opts.get(CONF_SET_SHAPE_BASE, "")
                 ): str,
             }
         )
