@@ -66,7 +66,9 @@ class BaseusConfigFlow(ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(config_entry: ConfigEntry) -> "BaseusOptionsFlow":
-        return BaseusOptionsFlow(config_entry)
+        # HA 2026 exposes config_entry as a read-only property after the flow
+        # is created. Passing it into __init__ raises "no setter".
+        return BaseusOptionsFlow()
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -121,9 +123,6 @@ class BaseusOptionsFlow(OptionsFlow):
     Run ``python -m baseus_bridge probe-controls`` to discover the action/shape
     pair, then enter them here and enable controls.
     """
-
-    def __init__(self, config_entry: ConfigEntry) -> None:
-        self.config_entry = config_entry
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
